@@ -1,0 +1,20 @@
+@voxresnet info
+preprocess steps:
+	#1. subtract gaussian smooth images
+
+	#2. adaptive hostogram equalization
+
+	#3. normalization each slice with zeros mean and unit std
+
+train the network
+	#cross validation method is used for invastigating effients of multi-modality.
+	trian: random crop the train data to 80*80*80 because of limitation of GPU memory
+
+	test: the probability map of whole volume was generated in overlap-tiling strategy for stitching the sub-volume results
+
+evaluate parameters
+
+	#dice coefficients
+
+@denseseg
+preprocess steps:
