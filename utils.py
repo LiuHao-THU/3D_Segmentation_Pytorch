@@ -1,14 +1,45 @@
+import sys
 import os
 import shutil
-def Mkdir(dir):
-    if os.path.isdir(dir):
-        shutil.rmtree(dir, ignore_errors=True)
-    else:
-        os.makedirs(dir)
-# def Get_DataName(DataSet_Dir, Txt_file):
-# 	"""Make DataSet file Name to .txt file"""
-# 	DataSet_List = os.listdir(DataSet_Dir)
-# 	txt = open(Txt_file, 'w')
-# 	for name in DataSet_Dir:
-# 		Txt_file = 
-	
+
+
+# def Mkdir(dir):
+#     if os.path.isdir(dir):
+#         shutil.rmtree(dir, ignore_errors=True)
+#     else:
+#         os.makedirs(dir)
+def Mkdir(directory):
+    try:
+        os.stat(directory)
+    except:
+        os.mkdir(directory)  
+
+# http://stackoverflow.com/questions/34950201/pycharm-print-end-r-statement-not-working
+class Logger(object):
+    def __init__(self):
+        self.terminal = sys.stdout  # stdout
+        self.file = None
+
+    def open(self, file, mode=None):
+        if mode is None:
+            mode = 'w'
+        self.file = open(file, mode)
+
+    def write(self, message, is_terminal=1, is_file=1):
+        if '\r' in message:
+            is_file = 0
+
+        if is_terminal == 1:
+            self.terminal.write(message)
+            self.terminal.flush()
+            # time.sleep(1)
+
+        if is_file == 1:
+            self.file.write(message)
+            self.file.flush()
+
+    def flush(self):
+        # this flush method is needed for python 3 compatibility.
+        # this handles the flush command by doing nothing.
+        # you might want to specify some extra behavior here.
+        pass

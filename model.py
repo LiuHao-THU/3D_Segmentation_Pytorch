@@ -137,8 +137,8 @@ class Net(nn.Module):
             self.pool5,
         ]
         for l1, l2 in zip(vgg16.features, features):
-            print("what is l1? ", l1)
-            print("what is l2? ", l2)
+            # print("what is l1? ", l1)
+            # print("what is l2? ", l2)
             if isinstance(l1, nn.Conv2d) and isinstance(l2, nn.Conv2d):
                 assert l1.weight.size() == l2.weight.size()
                 assert l1.bias.size() == l2.bias.size()
@@ -152,21 +152,21 @@ class Net(nn.Module):
 
     def forward(self, x):
         h = x
-        happyprint("init: ", x.data[0].shape)
+        # happyprint("init: ", x.data[0].shape)
 
         h = self.relu1_1(self.conv1_1(h))
-        happyprint("after conv1_1: ", h.data[0].shape)
+        # happyprint("after conv1_1: ", h.data[0].shape)
         
         h = self.relu1_2(self.conv1_2(h))
         h = self.pool1(h)
 
-        happyprint("after pool1: ", h.data[0].shape)
+        # happyprint("after pool1: ", h.data[0].shape)
 
         h = self.relu2_1(self.conv2_1(h))
         h = self.relu2_2(self.conv2_2(h))
         h = self.pool2(h)
 
-        happyprint("after pool2: ", h.data[0].shape)
+        # happyprint("after pool2: ", h.data[0].shape)
 
         h = self.relu3_1(self.conv3_1(h))
         h = self.relu3_2(self.conv3_2(h))
@@ -174,7 +174,7 @@ class Net(nn.Module):
         h = self.pool3(h)
         pool3 = h  # 1/8
 
-        happyprint("after pool3: ", h.data[0].shape)
+        # happyprint("after pool3: ", h.data[0].shape)
 
         h = self.relu4_1(self.conv4_1(h))
         h = self.relu4_2(self.conv4_2(h))
@@ -182,14 +182,14 @@ class Net(nn.Module):
         h = self.pool4(h)
         pool4 = h  # 1/16
 
-        happyprint("after pool4: ", h.data[0].shape)
+        # happyprint("after pool4: ", h.data[0].shape)
 
         h = self.relu5_1(self.conv5_1(h))
         h = self.relu5_2(self.conv5_2(h))
         h = self.relu5_3(self.conv5_3(h))
         h = self.pool5(h)
 
-        happyprint("after pool5: ", h.data[0].shape)
+        # happyprint("after pool5: ", h.data[0].shape)
 
         h = self.relu6(self.fc6(h))
         h = self.drop6(h)
@@ -199,24 +199,24 @@ class Net(nn.Module):
 
         h = self.score_fr(h)
 
-        happyprint("after score_fr: ", h.data[0].shape)
+        # happyprint("after score_fr: ", h.data[0].shape)
         h = self.upscore2(h)
 
-        happyprint("after upscore2: ", h.data[0].shape)
+        # happyprint("after upscore2: ", h.data[0].shape)
         upscore2 = h  # 1/16
 
         h = self.score_pool4(pool4 * 0.01)  # XXX: scaling to train at once
-        happyprint("after score_pool4: ", h.data[0].shape)
+        # happyprint("after score_pool4: ", h.data[0].shape)
 
         h = h[:, :, 5:5 + upscore2.size()[2], 5:5 + upscore2.size()[3], 5:5 + upscore2.size()[4]]
 
         score_pool4c = h  # 1/16
-        happyprint("after score_pool4c: ", h.data[0].shape)
+        # happyprint("after score_pool4c: ", h.data[0].shape)
 
         h = upscore2 + score_pool4c  # 1/16
         h = self.upscore_pool4(h)
         upscore_pool4 = h  # 1/8
-        happyprint("after upscore_pool4: ", h.data[0].shape)
+        # happyprint("after upscore_pool4: ", h.data[0].shape)
 
         h = self.score_pool3(pool3 * 0.0001)  # XXX: scaling to train at once
         h = h[:, :,
@@ -224,7 +224,7 @@ class Net(nn.Module):
              9:9 + upscore_pool4.size()[3],
              9:9 + upscore_pool4.size()[4]]
         score_pool3c = h  # 1/8
-        happyprint("after score_pool3: ", h.data[0].shape)
+        # happyprint("after score_pool3: ", h.data[0].shape)
 
         # print(upscore_pool4.data[0].shape)
         # print(score_pool3c.data[0].shape)
@@ -237,5 +237,5 @@ class Net(nn.Module):
 
         h = self.upscore8(h) # dim: 88^3
         h = h[:, :, 31:31 + x.size()[2], 31:31 + x.size()[3], 31:31 + x.size()[4]].contiguous()
-        happyprint("after upscore8: ", h.data[0].shape)
+        # happyprint("after upscore8: ", h.data[0].shape)
         return h

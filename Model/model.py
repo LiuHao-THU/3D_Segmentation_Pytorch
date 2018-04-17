@@ -1,9 +1,7 @@
-
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+import numpy as np
 class Net(nn.Module):
     def __init__(self, n_class = 2):
         super().__init__()
